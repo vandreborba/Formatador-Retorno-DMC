@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatador de Retorno DMC</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="theme-toggle">
+                <button id="themeToggle" class="theme-btn" onclick="toggleTheme()">
+                    <span class="theme-icon">🌙</span>
+                    <span class="theme-text">Modo Escuro</span>
+                </button>
+            </div>
+            <h1>📋 Formatador de Retorno DMC</h1>
+            <p>Cole o texto bruto e transforme em formato visual para foto</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label for="rawText">Cole aqui o texto do retorno DMC:</label>
+                <div class="help-text">
+                    💡 <strong>Dica:</strong> Você pode colar vários retornos juntos! Separe-os com linhas como ===== ou ----- ou deixe uma linha em branco entre eles.
+                    <br>⌨️ <strong>Atalho:</strong> Ctrl + Enter para formatar rapidamente
+                </div>
+                <textarea id="rawText" placeholder="=== RETORNO AO DMC ===
+(...)
+..."></textarea>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn" onclick="formatText()">🎨 Formatar Texto(s)</button>
+            </div>
+        </div>
+
+        <div class="output-section" id="outputSection">
+            <div class="results-header">
+                <div class="results-count" id="resultsCount">
+                    📄 Resultados processados
+                </div>
+            </div>
+            
+            <div id="formattedOutput">
+                <!-- O conteúdo formatado aparecerá aqui -->
+            </div>
+            
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="clearAll()">🗑️ Limpar Tudo</button>
+                <button class="btn" onclick="formatText()">🔄 Reformatar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
