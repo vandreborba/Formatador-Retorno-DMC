@@ -2,6 +2,12 @@
 
 > **Uso Pessoal** - Aplicação desenvolvida para necessidade específica MINHA e disponibilizada online apenas para facilitar o meu acesso e controle do código.
 
+## 🌐 Acesso Online
+
+**🔗 [Usar aplicação online](https://vandreborba.github.io/Formatador-Retorno-DMC/)**
+
+> Clique no link acima para acessar a aplicação diretamente no navegador, sem precisar baixar nada!
+
 ## 🎯 Objetivo
 
 Este aplicativo foi criado para formatar textos específico de forma visualmente organizada, facilitando a captura de screenshots para envio via WhatsApp ou outras plataformas.
@@ -16,7 +22,13 @@ Este aplicativo foi criado para formatar textos específico de forma visualmente
 
 ## 🚀 Como usar
 
-1. Abra o arquivo `formatador_retorno_dmc.html` no navegador
+**Opção 1 - Online (Recomendado):**
+1. [Acesse a aplicação online](https://vandreborba.github.io/Formatador-Retorno-DMC/)
+
+**Opção 2 - Local:**
+1. Baixe e abra o arquivo `index.html` no navegador
+
+**Em seguida:**
 2. Cole o texto bruto do retorno DMC na área de texto
 3. Clique em "Formatar Texto(s)" ou use Ctrl+Enter
 4. Tire screenshot da área formatada
@@ -37,7 +49,7 @@ Explicação: Quando o informante...
 ## 📁 Estrutura do Projeto
 
 ```
-├── formatador_retorno_dmc.html    # Página principal
+├── index.html                     # Página principal
 ├── style.css                      # Estilos e temas
 ├── script.js                      # Lógica da aplicação
 └── README.md                      # Este arquivo
