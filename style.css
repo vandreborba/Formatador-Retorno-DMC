@@ -249,8 +249,8 @@ textarea:focus {
 }
 
 .info-item {
-    margin-bottom: 20px;
-    padding: 15px;
+    margin-bottom: 8px;
+    padding: 6px 12px;
     background: var(--info-bg);
     border-left: 5px solid var(--info-border);
     border-radius: 0 8px 8px 0;
@@ -259,8 +259,17 @@ textarea:focus {
 .info-item-inline {
     display: flex;
     align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
+    gap: 8px;
+    flex-wrap: nowrap;
+    margin-bottom: 0;
+    padding: 0;
+    background: transparent;
+    border-left: none;
+    border-radius: 0;
+}
+
+.info-item-inline:not(:last-child) {
+    margin-bottom: 8px;
 }
 
 .info-label {
@@ -273,9 +282,9 @@ textarea:focus {
 .info-label-inline {
     font-weight: bold;
     color: var(--text-primary);
-    font-size: 1.1em;
+    font-size: 0.95em;
     margin-bottom: 0;
-    min-width: 120px;
+    min-width: auto;
     flex-shrink: 0;
 }
 
@@ -288,8 +297,8 @@ textarea:focus {
 
 .info-value-inline {
     color: var(--text-primary);
-    font-size: 1.1em;
-    font-weight: 600;
+    font-size: 0.95em;
+    font-weight: 500;
     flex-grow: 1;
     word-wrap: break-word;
 }
@@ -323,6 +332,65 @@ textarea:focus {
     margin-top: 15px;
     text-align: center;
     font-weight: 600;
+}
+
+.entrevistador-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.entrevistador-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    padding: 12px 15px;
+    background: var(--info-bg);
+    border-left: 4px solid #9333ea;
+    border-radius: 8px;
+    font-size: 0.95em;
+}
+
+.entrevistador-label {
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+.entrevistador-value {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.btn-copy-image {
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    font-size: 0.95em;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-copy-image:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.btn-copy-image:active {
+    transform: translateY(0);
+}
+
+.btn-copy-image:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .action-buttons {
@@ -401,6 +469,23 @@ textarea:focus {
         right: 15px;
     }
     
+    .entrevistador-container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .entrevistador-info {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .btn-copy-image {
+        width: 100%;
+        text-align: center;
+    }
+    }
+    
     .theme-btn {
         padding: 8px 12px;
         font-size: 0.8em;
@@ -439,7 +524,6 @@ textarea:focus {
     .info-value-inline {
         font-size: 1em;
     }
-}
 
 @media print {
     body {

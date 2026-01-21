@@ -111,6 +111,7 @@ class FormatadorRetornoDMC {
             fields: {},
             explanation: '',
             copyNote: '',
+            entrevistador: '',
             title: 'RETORNO AO DMC'
         };
         
@@ -126,6 +127,12 @@ class FormatadorRetornoDMC {
             // Separador final
             if (line.match(/^[-=*#]{5,}$/)) {
                 collectingExplanation = false;
+                continue;
+            }
+            
+            // Entrevistador
+            if (line.toLowerCase().startsWith('entrevistador:')) {
+                parsed.entrevistador = line.replace(/^entrevistador:\s*/i, '');
                 continue;
             }
             
@@ -186,8 +193,23 @@ class FormatadorRetornoDMC {
         const title = totalCount > 1 ? 
             `📋 RETORNO AO DMC #${number}` : 
             '📋 RETORNO AO DMC';
+        
+        let html = '';
+        
+        // Mostrar Entrevistador fora do quadro principal (não copiável)
+        if (parsed.entrevistador) {
+            html += `<div class="entrevistador-container">
+                      <div class="entrevistador-info">
+                        <span class="entrevistador-label">👨‍💼 Entrevistador:</span>
+                        <span class="entrevistador-value">${this.escapeHtml(parsed.entrevistador)}</span>
+                      </div>
+                      <button class="btn-copy-image" onclick="copyFormattedAsImage(this)" title="Copiar quadro como imagem">
+                        📸 Copiar
+                      </button>
+                    </div>`;
+        }
             
-        let html = `<div class="formatted-output">
+        html += `<div class="formatted-output">
                       <div class="dmc-title">${title}</div>`;
         
         // Campos principais com ordem específica
@@ -206,11 +228,11 @@ class FormatadorRetornoDMC {
             }
         });
         
-        // Adicionar outros campos não mapeados
+        // Adicionar outros campos não mapeados (inline por padrão para compacto)
         Object.keys(parsed.fields).forEach(key => {
             if (!fieldOrder.some(f => f.key === key)) {
                 const label = '📌 ' + key.charAt(0).toUpperCase() + key.slice(1);
-                html += this.createInfoItem(label, parsed.fields[key]);
+                html += this.createInfoItem(label, parsed.fields[key], true);
             }
         });
         
@@ -238,18 +260,20 @@ class FormatadorRetornoDMC {
     }
 
     createInfoItem(label, value, inline = false) {
+        const cleanedValue = this.cleanEmptyQuotes(value);
+        
         if (inline) {
             return `
                 <div class="info-item info-item-inline">
                     <span class="info-label-inline">${label}</span>
-                    <span class="info-value-inline">${this.escapeHtml(value)}</span>
+                    <span class="info-value-inline">${this.escapeHtml(cleanedValue)}</span>
                 </div>
             `;
         } else {
             return `
                 <div class="info-item">
                     <div class="info-label">${label}</div>
-                    <div class="info-value">${this.escapeHtml(value)}</div>
+                    <div class="info-value">${this.escapeHtml(cleanedValue)}</div>
                 </div>
             `;
         }
@@ -295,7 +319,11 @@ class FormatadorRetornoDMC {
         div.textContent = text;
         return div.innerHTML;
     }
-}
+
+    cleanEmptyQuotes(text) {
+        // Remove aspas duplas vazias ("") e substitui por aspa simples (")
+        return text.replace(/""/g, '"');
+    }}
 
 // Gerenciador de Tema
 class ThemeManager {
@@ -345,6 +373,70 @@ function clearAll() {
 
 function toggleTheme() {
     themeManager.toggle();
+}
+
+async function copyFormattedAsImage(buttonElement) {
+    try {
+        // Encontrar o quadro formatado mais próximo
+        // O .formatted-output é irmão do .entrevistador-container, então procuramos no pai comum
+        const container = buttonElement.closest('.entrevistador-container');
+        const formattedOutput = container.nextElementSibling;
+        
+        if (!formattedOutput || !formattedOutput.classList.contains('formatted-output')) {
+            alert('❌ Não foi possível encontrar o quadro para copiar.');
+            return;
+        }
+        
+        // Mudar o texto do botão para feedback
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = '⏳ Processando...';
+        buttonElement.disabled = true;
+        
+        // Converter o HTML para imagem
+        const canvas = await html2canvas(formattedOutput, {
+            scale: 2,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff'
+        });
+        
+        // Converter canvas para blob
+        canvas.toBlob(async (blob) => {
+            try {
+                // Copiar para a área de transferência
+                await navigator.clipboard.write([
+                    new ClipboardItem({
+                        'image/png': blob
+                    })
+                ]);
+                
+                // Feedback de sucesso
+                buttonElement.innerHTML = '✅ Copiado!';
+                buttonElement.style.background = '#4CAF50';
+                buttonElement.style.color = 'white';
+                
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalText;
+                    buttonElement.style.background = '';
+                    buttonElement.style.color = '';
+                    buttonElement.disabled = false;
+                }, 2000);
+                
+            } catch (error) {
+                console.error('Erro ao copiar:', error);
+                buttonElement.innerHTML = '❌ Erro na cópia';
+                setTimeout(() => {
+                    buttonElement.innerHTML = originalText;
+                    buttonElement.disabled = false;
+                }, 2000);
+            }
+        });
+        
+    } catch (error) {
+        console.error('Erro ao gerar imagem:', error);
+        alert('❌ Erro ao gerar a imagem. Verifique o console.');
+        buttonElement.disabled = false;
+    }
 }
 
 // Inicializar quando a página carregar
