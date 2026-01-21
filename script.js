@@ -117,6 +117,10 @@ class FormatadorRetornoDMC {
         
         let explanationText = '';
         let collectingExplanation = false;
+        let collectingOQueArrumar = false;
+        let oQueArrumarText = '';
+        
+        const mainFields = ['setor', 'domicílio', 'morador', 'profissão', 'o que arrumar'];
         
         for (let line of lines) {
             // Título principal
@@ -127,6 +131,7 @@ class FormatadorRetornoDMC {
             // Separador final
             if (line.match(/^[-=*#]{5,}$/)) {
                 collectingExplanation = false;
+                collectingOQueArrumar = false;
                 continue;
             }
             
@@ -141,19 +146,54 @@ class FormatadorRetornoDMC {
                 line.toLowerCase().includes('só avisar') ||
                 line.toLowerCase().includes('se quiser')) {
                 parsed.copyNote = line;
+                collectingOQueArrumar = false;
                 continue;
             }
             
             // Detectar início da explicação
             if (line.toLowerCase().startsWith('explicação:')) {
                 collectingExplanation = true;
+                collectingOQueArrumar = false;
                 explanationText = line.replace(/^explicação:\s*/i, '');
                 continue;
             }
             
             // Coletar texto da explicação
             if (collectingExplanation) {
-                explanationText += ' ' + line;
+                explanationText += '\n' + line;
+                continue;
+            }
+            
+            // Detectar início de "O que arrumar"
+            if (line.toLowerCase().startsWith('o que arrumar:')) {
+                collectingOQueArrumar = true;
+                oQueArrumarText = line.replace(/^o que arrumar:\s*/i, '');
+                continue;
+            }
+            
+            // Coletar texto de "O que arrumar"
+            if (collectingOQueArrumar) {
+                // Verificar se é um novo campo principal (mas não linhas que começam com "-")
+                if (line.includes(':') && !line.startsWith('-')) {
+                    const colonIndex = line.indexOf(':');
+                    const possibleKey = line.substring(0, colonIndex).trim().toLowerCase();
+                    
+                    // Se for um campo principal, parar de coletar "O que arrumar"
+                    if (mainFields.includes(possibleKey)) {
+                        parsed.fields['o que arrumar'] = oQueArrumarText.trim();
+                        collectingOQueArrumar = false;
+                        
+                        // Processar o novo campo
+                        const value = line.substring(colonIndex + 1).trim();
+                        if (possibleKey && value) {
+                            parsed.fields[possibleKey] = value;
+                        }
+                        continue;
+                    }
+                }
+                
+                // Continuar coletando texto de "O que arrumar"
+                oQueArrumarText += '\n' + line;
                 continue;
             }
             
@@ -167,6 +207,11 @@ class FormatadorRetornoDMC {
                     parsed.fields[key.toLowerCase()] = value;
                 }
             }
+        }
+        
+        // Salvar "O que arrumar" se ainda estiver coletando
+        if (collectingOQueArrumar && oQueArrumarText.trim()) {
+            parsed.fields['o que arrumar'] = oQueArrumarText.trim();
         }
         
         if (explanationText.trim()) {

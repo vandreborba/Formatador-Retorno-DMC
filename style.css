@@ -250,18 +250,22 @@ textarea:focus {
 
 .info-item {
     margin-bottom: 8px;
-    padding: 6px 12px;
+    padding: 12px 15px;
     background: var(--info-bg);
     border-left: 5px solid var(--info-border);
     border-radius: 0 8px 8px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .info-item-inline {
     display: flex;
-    align-items: center;
+    flex-direction: row;
+    align-items: flex-start;
     gap: 8px;
     flex-wrap: nowrap;
-    margin-bottom: 0;
+    margin-bottom: 6px;
     padding: 0;
     background: transparent;
     border-left: none;
@@ -291,8 +295,10 @@ textarea:focus {
 .info-value {
     color: var(--text-primary);
     font-size: 1em;
-    line-height: 1.4;
+    line-height: 1.5;
     word-wrap: break-word;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .info-value-inline {
